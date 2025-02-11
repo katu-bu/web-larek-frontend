@@ -1,7 +1,7 @@
 import { IView } from "./iview";
 import { IEventEmitter } from "../events";
 
-// интерфейс отображений - элемент корзины 
+// отображение элемента корзины 
 
 export class BasketItemView implements IView {
   protected title: HTMLSpanElement;

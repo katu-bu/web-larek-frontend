@@ -18,25 +18,21 @@ export class OrderDataFirstModalView implements IView {
     this.nextButton = container.querySelector('.order__button') as HTMLButtonElement;
   
     this.closeModalButton.addEventListener('click', () => {
-      // как закрыть окно - поменять класс у попапа?;]
-      // this.events.emit('ui:basket-open', {});
-      
+      // TODO обработать закрытие модального окна на следующем спринте      
     });
 
     this.cardOrderButton.addEventListener('click', () => {
-      // надо передать серверу инфу о способе оплаты - карта; 
       this.events.emit('ui:order-update', {payment: "card"});
     });
 
     this.cashOrderButton.addEventListener('click', () => {
-      // надо передать серверу инфу о способе оплаты - наличка;
       this.events.emit('ui:order-update', {payment: "cash"});
     });
 
     this.nextButton.addEventListener('click', () => {
       this.events.emit('ui:order-update', {address: this.address.value});
       this.events.emit('ui:order-open-step2', {});
-      // закрытие модалки 
+      // TODO обработать закрытие модального окна на следующем спринте
     });
   }
 

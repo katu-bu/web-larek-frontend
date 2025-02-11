@@ -21,7 +21,7 @@ export class BasketView implements IView {
     });
 
     this.closeModalButton.addEventListener('click', () => {
-      this.container.classList.add('disabled');
+      // TODO обработать закрытие модального окна на следующем спринте
     });
   }
 

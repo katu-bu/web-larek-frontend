@@ -14,11 +14,11 @@ export class OrderResultModalView implements IView {
     this.orderSuccessCloseButton = container.querySelector('.order-success__close') as HTMLButtonElement;
   
     this.closeModalButton.addEventListener('click', () => {
-      // как закрыть окно - поменять класс у попапа?;
+      // TODO обработать закрытие модального окна на следующем спринте
     });
 
     this.orderSuccessCloseButton.addEventListener('click', () => {
-      // закрытие модалки 
+     // TODO обработать закрытие модального окна на следующем спринте
     });
   }
 

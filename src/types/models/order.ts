@@ -59,6 +59,6 @@ export class OrderModel implements IOrderModel {
   constructor(protected events: IEventEmitter) {}
 
   protected _changed() {
-    this.events.emit('order:change', {  })
+    this.events.emit('order:change', {})
   }
 }

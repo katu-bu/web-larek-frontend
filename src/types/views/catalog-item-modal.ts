@@ -28,8 +28,7 @@ export class CatalogItemModalView implements IView {
     });
 
     this.closeModalButton.addEventListener('click', () => {
-      // как закрыть окно - поменять класс у попапа?;
-      // this.container.classList.add('disabled');
+      // TODO обработать закрытие модального окна на следующем спринте
     });
   }
   
@@ -40,7 +39,6 @@ export class CatalogItemModalView implements IView {
       this.description.textContent = data.description;
       this.image.src = data.image;
       this.category.textContent = data.category;
-      // как то добавлять класс по цвету категории
       this.price.textContent = data.price.toString();
       return this.container;
     }
