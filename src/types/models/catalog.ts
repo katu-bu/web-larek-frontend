@@ -1,5 +1,5 @@
 import { IEventEmitter } from "../events";
-import { IProduct } from "../data";
+import { IProduct } from "../index";
 
 // интерфейс модели данных - каталог товаров
 

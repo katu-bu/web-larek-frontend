@@ -1,4 +1,4 @@
-import { IProduct, IOrderData, IOrderResult } from "../types/data"
+import { IProduct, IOrderData, IOrderResult } from "../types/index"
 
 // интерфейс API-клиента
 

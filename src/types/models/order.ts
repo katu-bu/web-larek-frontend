@@ -1,5 +1,5 @@
 import { IEventEmitter } from "../events";
-import { IOrderData } from "../data";
+import { IOrderData } from "../index";
 
 // интерфейс модели данных - данные о заказе
 
