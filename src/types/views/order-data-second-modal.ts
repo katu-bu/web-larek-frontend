@@ -3,7 +3,7 @@ import { IEventEmitter } from "../events";
 
 // интерфейс отображений - модальное окно с деталями заказа: телефон и email
 
-export class OrderDataFirstModalView implements IView {
+export class OrderDataSecondModalView implements IView {
   protected email: HTMLInputElement;
   protected phone: HTMLInputElement;
   protected closeModalButton: HTMLButtonElement;
