@@ -36,7 +36,7 @@ export class OrderDataFirstModalView implements IView {
     });
   }
 
-  render(data: {}) {
+  render(_data: {}) {
     return this.container;
   } 
 }

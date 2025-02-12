@@ -24,7 +24,7 @@ export class OrderDataSecondModalView implements IView {
     });
   }
 
-render(data: {}) {
+render(_data: {}) {
   return this.container;
 } 
 }

@@ -11,16 +11,15 @@ export interface IPartialOrderData {
 }
 
 interface IOrderModel {
-  customerData: IPartialOrderData;
   update(upd: IPartialOrderData): void;
   clear(total: number, items: string[]): void;
   getFinalOrder(): IOrderData;
 }
 
 export class OrderModel implements IOrderModel {
-  customerData: IPartialOrderData = {};
-  total: number = 0;
-  items: string[] = [];
+  protected customerData: IPartialOrderData = {};
+  protected total: number = 0;
+  protected items: string[] = [];
 
   update(upd: IPartialOrderData): void {
     if (upd.payment) {
