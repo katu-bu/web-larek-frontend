@@ -149,7 +149,17 @@ interface IOrderData {
 }
 ```
 
-3. `IOrderResult` — тип для результата оформления заказа:
+3. `IPartialOrderData` — тип, предназначенный для сохранения данных заказа, введенных или выбранных покупателем, пока заказ еще не оформлен до конца (все поля опциональные):
+```
+interface IPartialOrderData {
+  payment?: string;
+  email?: string;
+  phone?: number;
+  address?: string;
+}
+```
+
+4. `IOrderResult` — тип для результата оформления заказа:
 ```
 interface IOrderResult {
   id: string;

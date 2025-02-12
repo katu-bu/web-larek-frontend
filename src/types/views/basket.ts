@@ -1,33 +1,43 @@
-import { IView } from "./iview";
-import { IEventEmitter } from "../events";
+import { IView } from './iview';
+import { IEventEmitter } from '../events';
 
-// отображение модального окна с корзиной 
+// отображение модального окна с корзиной
 
 export class BasketView implements IView {
-  
-  protected totalPrice: HTMLSpanElement;
-  protected itemsList: HTMLUListElement;
-  protected closeModalButton: HTMLButtonElement;
-  protected makeOrderButton: HTMLButtonElement;
-  
-  constructor(protected container: HTMLElement, protected events: IEventEmitter) {
-    this.totalPrice = container.querySelector('.basket__price') as HTMLSpanElement;
-    this.makeOrderButton = container.querySelector('.basket__button') as HTMLButtonElement;
-    this.closeModalButton = container.querySelector('.modal__close') as HTMLButtonElement;
-    this.itemsList = container.querySelector('.basket__list') as HTMLUListElement;
+	protected totalPrice: HTMLSpanElement;
+	protected itemsList: HTMLUListElement;
+	protected closeModalButton: HTMLButtonElement;
+	protected makeOrderButton: HTMLButtonElement;
 
-    this.makeOrderButton.addEventListener('click', () => {
-      this.events.emit('ui:order-initiate', {});
-    });
+	constructor(
+		protected container: HTMLElement,
+		protected events: IEventEmitter
+	) {
+		this.totalPrice = container.querySelector(
+			'.basket__price'
+		) as HTMLSpanElement;
+		this.makeOrderButton = container.querySelector(
+			'.basket__button'
+		) as HTMLButtonElement;
+		this.closeModalButton = container.querySelector(
+			'.modal__close'
+		) as HTMLButtonElement;
+		this.itemsList = container.querySelector(
+			'.basket__list'
+		) as HTMLUListElement;
 
-    this.closeModalButton.addEventListener('click', () => {
-      // TODO обработать закрытие модального окна на следующем спринте
-    });
-  }
+		this.makeOrderButton.addEventListener('click', () => {
+			this.events.emit('ui:order-initiate', {});
+		});
 
-  render(data: {items: HTMLElement [], totalPrice: number}) {
-    this.itemsList.replaceChildren(...data.items);
-    this.totalPrice.textContent = data.totalPrice.toString();
-    return this.container;
-  } 
+		this.closeModalButton.addEventListener('click', () => {
+			// TODO обработать закрытие модального окна на следующем спринте
+		});
+	}
+
+	render(data: { items: HTMLElement[]; totalPrice: number }) {
+		this.itemsList.replaceChildren(...data.items);
+		this.totalPrice.textContent = data.totalPrice.toString();
+		return this.container;
+	}
 }
