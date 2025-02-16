@@ -6,11 +6,13 @@ export interface IProduct {
 	image: string;
 	title: string;
 	category: string;
-	price: number;
+	price: number | null;
 }
 
+export type PaymentMethod = 'card' | 'cash';
+
 export interface IOrderData {
-	payment: string;
+	payment: PaymentMethod;
 	email: string;
 	phone: number;
 	address: string;
