@@ -15,8 +15,8 @@ export class ContactsFormView extends Form<RenderInput> {
 
 	constructor(container: HTMLFormElement, protected events: IEvents) {
 		super(container, events);
-		this._email = ensureElement<HTMLInputElement>('[name="email"]');
-		this._phone = ensureElement<HTMLInputElement>('[name="phone"]');
+		this._email = ensureElement<HTMLInputElement>('[name="email"]', container);
+		this._phone = ensureElement<HTMLInputElement>('[name="phone"]', container);
 
 		// при вводе почты генерируется событие `contacts.email:change`
 		// при вводе телефона генерируется событие `contacts.phone:change`

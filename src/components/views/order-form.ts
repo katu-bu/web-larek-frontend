@@ -18,10 +18,10 @@ export class OrderFormView extends Form<RenderInput> {
 
 	constructor(container: HTMLFormElement, protected events: IEvents) {
 		super(container, events);
-		this._address = ensureElement<HTMLInputElement>('[name="address"]');
-		this._cardOrderButton = ensureElement<HTMLButtonElement>('[name="card"]');
-		this._cashOrderButton = ensureElement<HTMLButtonElement>('[name="cash"]');
-		this._nextButton = ensureElement<HTMLButtonElement>('.order__button');
+		this._address = ensureElement<HTMLInputElement>('[name="address"]', container);
+		this._cardOrderButton = ensureElement<HTMLButtonElement>('[name="card"]', container);
+		this._cashOrderButton = ensureElement<HTMLButtonElement>('[name="cash"]', container);
+		this._nextButton = ensureElement<HTMLButtonElement>('.order__button', container);
 
 		// при вводе адреса генерируется событие `order.address:change`
 

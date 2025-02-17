@@ -16,9 +16,9 @@ export class BasketView extends Component<RenderInput> {
 
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
-		this._totalPrice = ensureElement<HTMLSpanElement>('.basket__price');
-		this._makeOrderButton = ensureElement<HTMLButtonElement>('.basket__button');
-		this._itemsList = ensureElement<HTMLUListElement>('.basket__list');
+		this._totalPrice = ensureElement<HTMLSpanElement>('.basket__price', container);
+		this._makeOrderButton = ensureElement<HTMLButtonElement>('.basket__button', container);
+		this._itemsList = ensureElement<HTMLUListElement>('.basket__list', container);
 
 		this._makeOrderButton.addEventListener('click', () => {
 			this.events.emit('ui:order-initiate', {});

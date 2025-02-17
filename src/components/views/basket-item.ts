@@ -19,8 +19,8 @@ export class BasketItemView extends Component<RenderInput> {
 
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
-		this._title = ensureElement<HTMLSpanElement>('.basket-item__title');
-		this._price = ensureElement<HTMLSpanElement>('.basket-item__price');
+		this._title = ensureElement<HTMLSpanElement>('.basket-item__title', container);
+		this._price = ensureElement<HTMLSpanElement>('.basket-item__price', container);
 		this._removeButton = ensureElement<HTMLButtonElement>(
 			'.basket-item__remove'
 		);

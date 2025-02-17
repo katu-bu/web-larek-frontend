@@ -8,6 +8,11 @@ interface IShopAPI {
 	orderProducts: (order: IOrderData) => Promise<IOrderResult>;
 }
 
+interface GetProductsResult {
+	total: number;
+	items: IProduct[];
+}
+
 // класс, реализующий интерфейс IShopAPI
 
 export class ShopAPI implements IShopAPI {
@@ -15,8 +20,8 @@ export class ShopAPI implements IShopAPI {
 
 	getProducts(): Promise<IProduct[]> {
 		const rawPromise: Promise<object> = this.api.get('/product');
-		return rawPromise.then((data: IProduct[]) =>
-			data.map((item) => {
+		return rawPromise.then((data: GetProductsResult) =>
+			data.items.map((item) => {
 				item.image = this.cdn + item.image;
 				return item;
 			})

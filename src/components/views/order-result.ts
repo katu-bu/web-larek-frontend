@@ -18,7 +18,7 @@ export class OrderResultView extends Component<RenderInput> {
 			'.order-success__description'
 		);
 		this._orderSuccessCloseButton = ensureElement<HTMLButtonElement>(
-			'.order-success__close'
+			'.order-success__close', container
 		);
 
 		this._orderSuccessCloseButton.addEventListener('click', () => {
