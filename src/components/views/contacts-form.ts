@@ -24,7 +24,11 @@ export class ContactsFormView extends Form<RenderInput> {
 		// в связующем коде надо будет обработать закрытие модалки
 	}
 
-	render(_data: RenderInput) {
-		return this.container;
+	set email(value: string) {
+		this._email.value = value;
+	}
+
+	set phone(value: number) {
+		this._phone.value = value.toString();
 	}
 }

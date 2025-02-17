@@ -1,5 +1,5 @@
-import { IEvents } from '../../base/events';
-import { IOrderData } from '../../../types/index';
+import { IEvents } from '../base/events';
+import { IOrderData } from '../../types/index';
 
 // интерфейс модели данных - данные о заказе
 

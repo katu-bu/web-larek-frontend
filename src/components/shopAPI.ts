@@ -1,6 +1,5 @@
 import { IProduct, IOrderData, IOrderResult } from '../types/index';
 import { Api } from './base/api';
-import { API_URL } from '../utils/constants';
 
 // интерфейс API-клиента
 
@@ -12,19 +11,20 @@ interface IShopAPI {
 // класс, реализующий интерфейс IShopAPI
 
 export class ShopAPI implements IShopAPI {
-	protected api: Api;
-
-	constructor() {
-		this.api = new Api(API_URL);
-	}
+	constructor(protected api: Api, protected cdn: string) {}
 
 	getProducts(): Promise<IProduct[]> {
 		const rawPromise: Promise<object> = this.api.get('/product');
-		return rawPromise.then((obj) => obj as IProduct[]);
+		return rawPromise.then((data: IProduct[]) =>
+			data.map((item) => {
+				item.image = this.cdn + item.image;
+				return item;
+			})
+		);
 	}
 
 	orderProducts(order: IOrderData): Promise<IOrderResult> {
 		const rawPromise: Promise<object> = this.api.post('/order', order);
-		return rawPromise.then((obj) => obj as IOrderResult);
+		return rawPromise.then((data: IOrderResult) => data);
 	}
 }

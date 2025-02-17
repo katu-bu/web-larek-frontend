@@ -1,5 +1,5 @@
-import { IEvents } from '../../base/events';
-import { IProduct } from '../../../types/index';
+import { IEvents } from '../base/events';
+import { IProduct } from '../../types/index';
 
 // интерфейс модели данных - каталог товаров
 

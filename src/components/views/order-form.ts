@@ -39,8 +39,11 @@ export class OrderFormView extends Form<RenderInput> {
 		// в связующем коде надо будет обработать закрытие модалки
 	}
 
-	render(_data: RenderInput) {
-		// TODO отобразить данные на форме
-		return this.container;
+	set address(value: string) {
+		this._address.value = value;
+	}
+
+	set payment(value: PaymentMethod) {
+		//TODO сделать кнопку нажатой
 	}
 }

@@ -1,4 +1,4 @@
-import { IEvents } from '../../base/events';
+import { IEvents } from '../base/events';
 
 // интерфейс модели данных - корзина товаров
 

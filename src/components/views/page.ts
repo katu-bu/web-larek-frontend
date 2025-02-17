@@ -23,7 +23,7 @@ export class PageView extends Component<IPage> {
 		this._basket = ensureElement<HTMLElement>('.header__basket');
 
 		this._basket.addEventListener('click', () => {
-			this.events.emit('bids:open');
+			this.events.emit('ui:basket-open');
 		});
 	}
 
