@@ -105,13 +105,13 @@ function renderPage() {
 }
 
 // товар добавляется или удаляется из корзины `BasketModel`
-events.on('basket:change', ({}) => {
+events.on('basket:change', () => {
 	renderBasket();
 	renderPage();
 });
 
 // вызывается при обновлении списка товаров в каталоге (`CatalogModel`)
-events.on('catalog:change', ({}) => {
+events.on('catalog:change', () => {
 	renderPage();
 });
 
@@ -122,7 +122,7 @@ events.on('ui:preview-open', (event: { id: string }) => {
 });
 
 // вызывается при изменении превью товара для показа в модальном окне
-events.on('catalog:preview:change', ({}) => {
+events.on('catalog:preview:change', () => {
 	const previewHTMLElement = previewTemplate.content.cloneNode(
 		true
 	) as HTMLElement;
