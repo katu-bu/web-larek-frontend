@@ -14,7 +14,7 @@ export type PaymentMethod = 'card' | 'cash';
 export interface IOrderData {
 	payment: PaymentMethod;
 	email: string;
-	phone: number;
+	phone: string;
 	address: string;
 	total: number;
 	items: string[];

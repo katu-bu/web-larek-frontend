@@ -15,19 +15,19 @@ export class OrderResultView extends Component<RenderInput> {
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 		this._totalPrice = ensureElement<HTMLParagraphElement>(
-			'.order-success__description'
+			'.order-success__description', container
 		);
 		this._orderSuccessCloseButton = ensureElement<HTMLButtonElement>(
 			'.order-success__close', container
 		);
 
 		this._orderSuccessCloseButton.addEventListener('click', () => {
-			// TODO обработать закрытие модального окна на следующем спринте
+			this.events.emit('succes-close', {});
 		});
 	}
 
 	render(data: RenderInput) {
-		this._totalPrice.textContent = data.totalPrice.toString();
+		this._totalPrice.textContent = 'Списано ' + data.totalPrice.toString() + ' синапсов';
 		return this.container;
 	}
 }

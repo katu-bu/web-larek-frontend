@@ -18,20 +18,34 @@ export class OrderFormView extends Form<RenderInput> {
 
 	constructor(container: HTMLFormElement, protected events: IEvents) {
 		super(container, events);
-		this._address = ensureElement<HTMLInputElement>('[name="address"]', container);
-		this._cardOrderButton = ensureElement<HTMLButtonElement>('[name="card"]', container);
-		this._cashOrderButton = ensureElement<HTMLButtonElement>('[name="cash"]', container);
-		this._nextButton = ensureElement<HTMLButtonElement>('.order__button', container);
+		this._address = ensureElement<HTMLInputElement>(
+			'[name="address"]',
+			container
+		);
+		this._cardOrderButton = ensureElement<HTMLButtonElement>(
+			'[name="card"]',
+			container
+		);
+		this._cashOrderButton = ensureElement<HTMLButtonElement>(
+			'[name="cash"]',
+			container
+		);
+		this._nextButton = ensureElement<HTMLButtonElement>(
+			'.order__button',
+			container
+		);
 
 		// при вводе адреса генерируется событие `order.address:change`
 
 		this._cardOrderButton.addEventListener('click', () => {
 			super.onInputChange('payment', 'card');
+			this.payment = 'card';
 			// `order.payment:change`
 		});
 
 		this._cashOrderButton.addEventListener('click', () => {
 			super.onInputChange('payment', 'cash');
+			this.payment = 'cash';
 			// `order.payment:change`
 		});
 
@@ -44,6 +58,12 @@ export class OrderFormView extends Form<RenderInput> {
 	}
 
 	set payment(value: PaymentMethod) {
-		//TODO сделать кнопку нажатой
+		this._cardOrderButton.classList.remove('button_alt-active');
+		this._cashOrderButton.classList.remove('button_alt-active');
+		if (value === 'card') {
+			this._cardOrderButton.classList.add('button_alt-active');
+		} else if (value === 'cash') {
+			this._cashOrderButton.classList.add('button_alt-active');
+		}
 	}
 }

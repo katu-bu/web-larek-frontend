@@ -6,7 +6,7 @@ import { ensureElement } from '../../utils/utils';
 
 interface RenderInput {
 	email?: string;
-	phone?: number;
+	phone?: string;
 }
 
 export class ContactsFormView extends Form<RenderInput> {
@@ -28,7 +28,7 @@ export class ContactsFormView extends Form<RenderInput> {
 		this._email.value = value;
 	}
 
-	set phone(value: number) {
-		this._phone.value = value.toString();
+	set phone(value: string) {
+		this._phone.value = value;
 	}
 }

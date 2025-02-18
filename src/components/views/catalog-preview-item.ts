@@ -26,11 +26,20 @@ export class CatalogPreviewItemView extends Component<RenderInput> {
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 		this._title = ensureElement<HTMLHeadingElement>('.card__title', container);
-		this._description = ensureElement<HTMLParagraphElement>('.card__text', container);
+		this._description = ensureElement<HTMLParagraphElement>(
+			'.card__text',
+			container
+		);
 		this._image = ensureElement<HTMLImageElement>('.card__image', container);
-		this._category = ensureElement<HTMLSpanElement>('.card__category', container);
+		this._category = ensureElement<HTMLSpanElement>(
+			'.card__category',
+			container
+		);
 		this._price = ensureElement<HTMLSpanElement>('.card__price', container);
-		this._addToBasketButton = ensureElement<HTMLButtonElement>('.card__button', container);
+		this._addToBasketButton = ensureElement<HTMLButtonElement>(
+			'.card__button',
+			container
+		);
 
 		this._addToBasketButton.addEventListener('click', () => {
 			this.events.emit('ui:add-to-basket', { id: this._id });
@@ -43,7 +52,11 @@ export class CatalogPreviewItemView extends Component<RenderInput> {
 		this._description.textContent = data.description;
 		this._image.src = data.image;
 		this._category.textContent = data.category;
-		this._price.textContent = data.price.toString();
+		if (data.price) {
+			this._price.textContent = data.price.toString() + ' синапсов';
+		} else {
+			this._price.textContent = '';
+		}
 		return this.container;
 	}
 }

@@ -16,32 +16,36 @@ interface IOrderModel {
 
 export class OrderModel implements IOrderModel {
 	orderErrors: Partial<Record<keyof IPartialOrderData, string>>;
-	protected customerData: IPartialOrderData = {};
-	protected total: number = 0;
-	protected items: string[] = [];
+	customerData: IPartialOrderData = {};
+	total: number = 0;
+	items: string[] = [];
 
 	update(upd: IPartialOrderData): void {
 		if (upd.payment) {
 			this.customerData.payment = upd.payment;
-			delete this.orderErrors.payment;
+			// delete this.orderErrors.payment;
 		}
 		if (upd.email) {
 			this.customerData.email = upd.email;
-			delete this.orderErrors.email;
+			// delete this.orderErrors.email;
 		}
 		if (upd.phone) {
 			this.customerData.phone = upd.phone;
-			delete this.orderErrors.phone;
+			// delete this.orderErrors.phone;
 		}
 		if (upd.address) {
 			this.customerData.address = upd.address;
-			delete this.orderErrors.address;
+			// delete this.orderErrors.address;
 		}
 		this._changed();
 	}
 
 	reset(items: string[], total: number) {
-		this.customerData = {};
+		this.customerData = {
+			email: '',
+			address: '',
+			phone: '',
+		};
 		this.items = items;
 		this.total = total;
 		this._changed();
