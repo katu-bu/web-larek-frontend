@@ -1,17 +1,13 @@
 import { Component } from '../base/component';
 import { IEvents } from '../base/events';
 import { ensureElement } from '../../utils/utils';
+import { IProduct } from '../../types';
 
 // отображение деталей продукта на превью
 
-interface RenderInput {
-	id: string;
-	title: string;
-	description: string;
-	image: string;
-	category: string;
-	price: number | null;
-}
+type RenderInput = IProduct & {
+	alreadyInBasket: boolean;
+};
 
 export class CatalogPreviewItemView extends Component<RenderInput> {
 	protected _title: HTMLHeadingElement;
@@ -56,6 +52,9 @@ export class CatalogPreviewItemView extends Component<RenderInput> {
 			this._price.textContent = data.price.toString() + ' синапсов';
 		} else {
 			this._price.textContent = '';
+		}
+		if (data.alreadyInBasket) {
+			this._addToBasketButton.disabled = true;
 		}
 		return this.container;
 	}

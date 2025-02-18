@@ -1,5 +1,5 @@
 import { IEvents } from '../base/events';
-import { IOrderData } from '../../types/index';
+import { IOrderData, PaymentMethod } from '../../types/index';
 
 // интерфейс модели данных - данные о заказе
 
@@ -7,7 +7,10 @@ type IPartialOrderData = Partial<Omit<IOrderData, 'total' | 'items'>>;
 
 interface IOrderModel {
 	orderErrors: Partial<Record<keyof IPartialOrderData, string>>;
-	update(upd: IPartialOrderData): void;
+	updatePayment(newValue: PaymentMethod, validationMessage: string): void;
+	updateEmail(newValue: string, validationMessage: string): void;
+	updatePhone(newValue: string, validationMessage: string): void;
+	updateAddress(newValue: string, validationMessage: string): void;
 	reset(items: string[], total: number): void;
 	getFinalOrder(): IOrderData;
 }
@@ -16,28 +19,43 @@ interface IOrderModel {
 
 export class OrderModel implements IOrderModel {
 	orderErrors: Partial<Record<keyof IPartialOrderData, string>>;
-	customerData: IPartialOrderData = {};
-	total: number = 0;
-	items: string[] = [];
+	customerData: IPartialOrderData;
+	total: number;
+	items: string[];
 
-	update(upd: IPartialOrderData): void {
-		if (upd.payment) {
-			this.customerData.payment = upd.payment;
-			// delete this.orderErrors.payment;
-		}
-		if (upd.email) {
-			this.customerData.email = upd.email;
-			// delete this.orderErrors.email;
-		}
-		if (upd.phone) {
-			this.customerData.phone = upd.phone;
-			// delete this.orderErrors.phone;
-		}
-		if (upd.address) {
-			this.customerData.address = upd.address;
-			// delete this.orderErrors.address;
-		}
+	updatePayment(newValue: PaymentMethod) {
+		this.customerData.payment = newValue;
+		delete this.orderErrors.payment;
 		this._changed();
+	}
+
+	updateEmail(newValue: string, validationMessage: string) {
+		this.customerData.email = newValue;
+		this.handleValidationError('email', validationMessage);
+		this._changed();
+	}
+
+	updatePhone(newValue: string, validationMessage: string) {
+		this.customerData.phone = newValue;
+		this.handleValidationError('phone', validationMessage);
+		this._changed();
+	}
+
+	updateAddress(newValue: string, validationMessage: string) {
+		this.customerData.address = newValue;
+		this.handleValidationError('address', validationMessage);
+		this._changed();
+	}
+
+	private handleValidationError(
+		key: keyof IPartialOrderData,
+		validationMessage: string
+	) {
+		if (validationMessage === '') {
+			delete this.orderErrors[key];
+		} else {
+			this.orderErrors[key] = validationMessage;
+		}
 	}
 
 	reset(items: string[], total: number) {

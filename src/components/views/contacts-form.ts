@@ -21,7 +21,18 @@ export class ContactsFormView extends Form<RenderInput> {
 		// при вводе почты генерируется событие `contacts.email:change`
 		// при вводе телефона генерируется событие `contacts.phone:change`
 		// при сабмите формы генерируется событие `contacts:submit`
-		// в связующем коде надо будет обработать закрытие модалки
+	}
+
+	handleFormErrors(formErrors: Partial<Record<keyof RenderInput, string>>) {
+		super.valid = !formErrors.email && !formErrors.phone;
+	}
+
+	makeEmailRequired() {
+		this._email.required = true;
+	}
+
+	makePhoneRequired() {
+		this._phone.required = true;
 	}
 
 	set email(value: string) {

@@ -56,6 +56,8 @@ const orderResultModal = new Modal(
 	document.querySelector('.modal__result'),
 	events
 );
+let orderView: OrderFormView | null = null;
+let contactsView: ContactsFormView | null = null;
 
 function computeTotalPrice() {
 	return Array.from(basketModel.items)
@@ -81,7 +83,7 @@ function renderBasket() {
 			events
 		);
 		const product = catalogModel.getProduct(id);
-		const renderInput = Object.assign({ index: ix+1 }, product);
+		const renderInput = Object.assign({ index: ix + 1 }, product);
 		return basketItemView.render(renderInput);
 	});
 	const totalPrice = computeTotalPrice();
@@ -126,7 +128,9 @@ events.on('catalog:preview:change', ({}) => {
 	) as HTMLElement;
 	const previewView = new CatalogPreviewItemView(previewHTMLElement, events);
 	catalogPreviewItemModal.content = previewHTMLElement;
-	previewView.render(catalogModel.preview);
+	const preview = catalogModel.preview;
+	const alreadyInBasket = basketModel.items.has(preview.id);
+	previewView.render(Object.assign({ alreadyInBasket }, preview));
 	catalogPreviewItemModal.open();
 });
 
@@ -155,64 +159,70 @@ events.on('ui:order-initiate', () => {
 	).querySelector('.form') as HTMLFormElement;
 	orderModel.reset(Array.from(basketModel.items), computeTotalPrice());
 	basketModel.clear();
-	const orderView = new OrderFormView(orderHTMLElement, events);
+	orderView = new OrderFormView(orderHTMLElement, events);
 	orderFormModal.content = orderHTMLElement;
 	orderView.render({
 		payment: orderModel.customerData.payment,
 		address: orderModel.customerData.address,
-		valid: true,
-		errors: [],
+		valid: false,
+		errors: '',
 	});
 	orderFormModal.open();
 });
 
-events.on('order:change', (event) => {
-	// вызывается, когда изменяются данные заказа (`OrderModel`).
-	// В обработчик передается обновленный объект заказа.
-});
-
 // пользователь вводит адрес доставки в `OrderFormView`
-events.on('order.address:change', (event: { field: string; value: string }) => {
-	orderModel.update({ address: event.value });
-});
+events.on(
+	'order.address:change',
+	(event: { field: string; value: string; validationMessage: string }) => {
+		orderModel.updateAddress(event.value, event.validationMessage);
+		orderView.handleFormErrors(orderModel.orderErrors);
+		orderView.makeAddressRequired();
+	}
+);
 
 // пользователь выбирает способ оплаты в `OrderFormView`
 events.on(
 	'order.payment:change',
 	(event: { field: string; value: PaymentMethod }) => {
-		orderModel.update({ payment: event.value });
+		orderModel.updatePayment(event.value);
+		orderView.handleFormErrors(orderModel.orderErrors);
 	}
 );
 
 // пользователь вводит email в `ContactsFormView`
 events.on(
 	'contacts.email:change',
-	(event: { field: string; value: string }) => {
-		orderModel.update({ email: event.value });
+	(event: { field: string; value: string; validationMessage: string }) => {
+		orderModel.updateEmail(event.value, event.validationMessage);
+		contactsView.handleFormErrors(orderModel.orderErrors);
+		contactsView.makeEmailRequired();
 	}
 );
 
 // пользователь вводит номер телефона в `ContactsFormView`
 events.on(
 	'contacts.phone:change',
-	(event: { field: string; value: string }) => {
-		orderModel.update({ phone: event.value });
+	(event: { field: string; value: string; validationMessage: string }) => {
+		orderModel.updatePhone(event.value, event.validationMessage);
+		contactsView.handleFormErrors(orderModel.orderErrors);
+		contactsView.makePhoneRequired();
 	}
 );
 
 // пользователь отправляет заказ в `OrderFormView`
 events.on('order:submit', () => {
 	orderFormModal.close();
+	orderView = null;
 	const contactsHTMLElement = (
 		contactsTemplate.content.cloneNode(true) as DocumentFragment
 	).querySelector('.form') as HTMLFormElement;
-	const contactsView = new ContactsFormView(contactsHTMLElement, events);
+	contactsView = new ContactsFormView(contactsHTMLElement, events);
 	contactsFormModal.content = contactsHTMLElement;
 	contactsView.render({
 		email: orderModel.customerData.email,
 		phone: orderModel.customerData.phone,
-		valid: true,
-		errors: [],
+		valid: false,
+		errors: '',
 	});
 	contactsFormModal.open();
 });
@@ -220,6 +230,7 @@ events.on('order:submit', () => {
 // пользователь отправляет форму с контактными данными (`ContactsFormView`).
 events.on('contacts:submit', () => {
 	contactsFormModal.close();
+	contactsView = null;
 	const resultHTMLElement = (
 		resultTemplate.content.cloneNode(true) as DocumentFragment
 	).querySelector('.order-success') as HTMLElement;
@@ -236,20 +247,6 @@ events.on('succes-close', () => {
 	orderResultModal.close();
 	orderModel.getFinalOrder();
 });
-
-// events.on('modal:open', (event) => {
-// 	if (event) {
-// 		// вызывается при открытии модального окна (`Modal`).
-// 		// В обработчик передается содержимое окна.
-// 	}
-// });
-
-// events.on('modal:close', (event) => {
-// 	if (event) {
-// 		// вызывается при закрытии модального окна (`Modal`).
-// 		// используется для очистки контента и скрытия окна.
-// 	}
-// });
 
 const api = new ShopAPI(new Api(API_URL), CDN_URL);
 

@@ -14,7 +14,6 @@ export class OrderFormView extends Form<RenderInput> {
 	protected _address: HTMLInputElement;
 	protected _cardOrderButton: HTMLButtonElement;
 	protected _cashOrderButton: HTMLButtonElement;
-	protected _nextButton: HTMLButtonElement;
 
 	constructor(container: HTMLFormElement, protected events: IEvents) {
 		super(container, events);
@@ -28,10 +27,6 @@ export class OrderFormView extends Form<RenderInput> {
 		);
 		this._cashOrderButton = ensureElement<HTMLButtonElement>(
 			'[name="cash"]',
-			container
-		);
-		this._nextButton = ensureElement<HTMLButtonElement>(
-			'.order__button',
 			container
 		);
 
@@ -53,8 +48,16 @@ export class OrderFormView extends Form<RenderInput> {
 		// в связующем коде надо будет обработать закрытие модалки
 	}
 
+	handleFormErrors(formErrors: Partial<Record<keyof RenderInput, string>>) {
+		super.valid = !formErrors.address && !formErrors.payment;
+	}
+
 	set address(value: string) {
 		this._address.value = value;
+	}
+
+	makeAddressRequired() {
+		this._address.required = true
 	}
 
 	set payment(value: PaymentMethod) {

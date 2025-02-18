@@ -31,6 +31,7 @@ export class BasketModel implements IBasketModel {
 
 	clear(): void {
 		this.items.clear();
+		this._changed();
 	}
 
 	countItems(): number {

@@ -4,7 +4,7 @@ import { ensureElement } from '../../../utils/utils';
 
 interface IFormState {
 	valid: boolean;
-	errors: string[];
+	errors: string;
 }
 
 export class Form<T> extends Component<IFormState> {
@@ -24,7 +24,7 @@ export class Form<T> extends Component<IFormState> {
 			const target = e.target as HTMLInputElement;
 			const field = target.name as keyof T;
 			const value = target.value;
-			this.onInputChange(field, value);
+			this.onInputChange(field, value, target.validationMessage);
 		});
 
 		this.container.addEventListener('submit', (e: Event) => {
@@ -33,10 +33,15 @@ export class Form<T> extends Component<IFormState> {
 		});
 	}
 
-	protected onInputChange(field: keyof T, value: string) {
+	protected onInputChange(
+		field: keyof T,
+		value: string,
+		validationMessage?: string
+	) {
 		this.events.emit(`${this.container.name}.${String(field)}:change`, {
 			field,
 			value,
+			validationMessage,
 		});
 	}
 
