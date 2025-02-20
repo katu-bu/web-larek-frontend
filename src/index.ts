@@ -39,23 +39,27 @@ const contactsTemplate = document.querySelector(
 const resultTemplate = document.querySelector(
 	'#success'
 ) as HTMLTemplateElement;
-const basketModal = new Modal(document.querySelector('.modal__basket'), events);
-const catalogPreviewItemModal = new Modal(
-	document.querySelector('.modal__preview'),
-	events
-);
-const orderFormModal = new Modal(
-	document.querySelector('.modal__order-form'),
-	events
-);
-const contactsFormModal = new Modal(
-	document.querySelector('.modal__contacts-form'),
-	events
-);
-const orderResultModal = new Modal(
-	document.querySelector('.modal__result'),
-	events
-);
+
+const modal = new Modal(document.querySelector('.modal'), events);
+// const basketModal = new Modal(document.querySelector('.modal__basket'), events);
+// const catalogPreviewItemModal = new Modal(
+// 	document.querySelector('.modal__preview'),
+// 	events
+// );
+// const orderFormModal = new Modal(
+// 	document.querySelector('.modal__order-form'),
+// 	events
+// );
+// const contactsFormModal = new Modal(
+// 	document.querySelector('.modal__contacts-form'),
+// 	events
+// );
+// const orderResultModal = new Modal(
+// 	document.querySelector('.modal__result'),
+// 	events
+// );
+
+
 let orderView: OrderFormView | null = null;
 let contactsView: ContactsFormView | null = null;
 
@@ -73,7 +77,8 @@ function renderBasket() {
 		true
 	) as HTMLElement;
 	const basketView = new BasketView(basketHTMLElement, events);
-	basketModal.content = basketHTMLElement;
+	// УБРАТЬ basketModal.content = basketHTMLElement;
+	modal.content = basketHTMLElement;
 	const htmlElements = Array.from(basketModel.items).map((id, ix) => {
 		const basketItemViewHTMLElement = (
 			basketItemTemplate.content.cloneNode(true) as DocumentFragment
@@ -127,17 +132,20 @@ events.on('catalog:preview:change', () => {
 		true
 	) as HTMLElement;
 	const previewView = new CatalogPreviewItemView(previewHTMLElement, events);
-	catalogPreviewItemModal.content = previewHTMLElement;
+	// УБРАТЬ catalogPreviewItemModal.content = previewHTMLElement;
+	modal.content = previewHTMLElement;
 	const preview = catalogModel.preview;
 	const alreadyInBasket = basketModel.items.has(preview.id);
 	previewView.render(Object.assign({ alreadyInBasket }, preview));
-	catalogPreviewItemModal.open();
+	// УБРАТЬ catalogPreviewItemModal.open();
+	modal.open();
 });
 
 // пользователь нажимает кнопку добавления в корзину (`CatalogItemView`).
 events.on('ui:add-to-basket', (event: { id: string }) => {
 	basketModel.add(event.id);
-	catalogPreviewItemModal.close();
+	// УБРАТЬ catalogPreviewItemModal.close();
+	modal.close();
 });
 
 // вызывается при нажатии кнопки удаления товара в `BasketItemView`.
@@ -148,26 +156,30 @@ events.on('ui:remove-from-basket', (event: { id: string }) => {
 // пользователь открывает корзину с главной страницы `PageView`
 events.on('ui:basket-open', () => {
 	renderBasket();
-	basketModal.open();
+	// УБРАТЬ basketModal.open();
+	modal.open();
 });
 
 // пользователь нажимает кнопку "Оформить заказ" в `BasketView`.
 events.on('ui:order-initiate', () => {
-	basketModal.close();
+	// УБРАТЬ basketModal.close();
+		modal.close();
 	const orderHTMLElement = (
 		orderTemplate.content.cloneNode(true) as DocumentFragment
 	).querySelector('.form') as HTMLFormElement;
 	orderModel.reset(Array.from(basketModel.items), computeTotalPrice());
 	basketModel.clear();
 	orderView = new OrderFormView(orderHTMLElement, events);
-	orderFormModal.content = orderHTMLElement;
+	// УБРАТЬ orderFormModal.content = orderHTMLElement;
+	modal.content = orderHTMLElement;
 	orderView.render({
 		payment: orderModel.customerData.payment,
 		address: orderModel.customerData.address,
 		valid: false,
 		errors: '',
 	});
-	orderFormModal.open();
+	// УБРАТЬ orderFormModal.open();
+	modal.open();
 });
 
 // пользователь вводит адрес доставки в `OrderFormView`
@@ -211,41 +223,56 @@ events.on(
 
 // пользователь отправляет заказ в `OrderFormView`
 events.on('order:submit', () => {
-	orderFormModal.close();
+	// УБРАТЬ orderFormModal.close();
+	modal.close();
 	orderView = null;
 	const contactsHTMLElement = (
 		contactsTemplate.content.cloneNode(true) as DocumentFragment
 	).querySelector('.form') as HTMLFormElement;
 	contactsView = new ContactsFormView(contactsHTMLElement, events);
-	contactsFormModal.content = contactsHTMLElement;
+	// УБРАТЬ contactsFormModal.content = contactsHTMLElement;
+	modal.content = contactsHTMLElement;
 	contactsView.render({
 		email: orderModel.customerData.email,
 		phone: orderModel.customerData.phone,
 		valid: false,
 		errors: '',
 	});
-	contactsFormModal.open();
+	// УБРАТЬ contactsFormModal.open();
+	modal.open();
 });
 
 // пользователь отправляет форму с контактными данными (`ContactsFormView`).
 events.on('contacts:submit', () => {
-	contactsFormModal.close();
+	// УБРАТЬ contactsFormModal.close();
+	modal.close();
 	contactsView = null;
 	const resultHTMLElement = (
 		resultTemplate.content.cloneNode(true) as DocumentFragment
 	).querySelector('.order-success') as HTMLElement;
 	const resultView = new OrderResultView(resultHTMLElement, events);
-	orderResultModal.content = resultHTMLElement;
+	// УБРАТЬ orderResultModal.content = resultHTMLElement;
+	modal.content = resultHTMLElement;
 	resultView.render({
 		totalPrice: orderModel.total,
 	});
-	orderResultModal.open();
+	// УБРАТЬ orderResultModal.open();
+	modal.open();
 });
 
 // пользователь нажимает на кнопку "За новыми покупками!"
 events.on('succes-close', () => {
-	orderResultModal.close();
-	orderModel.getFinalOrder();
+	// УБРАТЬ orderResultModal.close();
+	modal.close();
+	// ? orderModel.getFinalOrder();
+});
+
+events.on('modal:open', () => {
+	pageView.locked = true;
+});
+
+events.on('modal:close', () => {
+	pageView.locked = false;
 });
 
 const api = new ShopAPI(new Api(API_URL), CDN_URL);
@@ -254,3 +281,6 @@ api
 	.getProducts()
 	.then((res) => catalogModel.setItems(res))
 	.catch((err) => console.error(err));
+
+// api
+// 	.orderProducts(orderModel.getFinalOrder())
