@@ -4,12 +4,12 @@ import { ensureElement } from '../../utils/utils';
 
 // интерфейс отображений - модальное окно с деталями заказа: телефон и email
 
-interface RenderInput {
+interface IContactsData {
 	email?: string;
 	phone?: string;
 }
 
-export class ContactsFormView extends Form<RenderInput> {
+export class ContactsFormView extends Form<IContactsData> {
 	protected _email: HTMLInputElement;
 	protected _phone: HTMLInputElement;
 
@@ -23,8 +23,15 @@ export class ContactsFormView extends Form<RenderInput> {
 		// при сабмите формы генерируется событие `contacts:submit`
 	}
 
-	handleFormErrors(formErrors: Partial<Record<keyof RenderInput, string>>) {
+	handleFormErrors(formErrors: Partial<Record<keyof IContactsData, string>>) {
 		super.valid = !formErrors.email && !formErrors.phone;
+		if (formErrors.email) {
+			super.errors = 'Неправильно введена почта. ' + formErrors.email;
+		} else if (formErrors.phone) {
+			super.errors = 'Ошибка в телефоне: ' + formErrors.phone;
+		} else {
+			super.errors = '';
+		}
 	}
 
 	makeEmailRequired() {

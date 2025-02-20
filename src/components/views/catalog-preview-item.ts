@@ -1,15 +1,16 @@
 import { Component } from '../base/component';
 import { IEvents } from '../base/events';
 import { ensureElement } from '../../utils/utils';
+import { determineCategoryClass } from '../../utils/category';
 import { IProduct } from '../../types';
 
 // отображение деталей продукта на превью
 
-type RenderInput = IProduct & {
+type IPreviewProduct = IProduct & {
 	alreadyInBasket: boolean;
 };
 
-export class CatalogPreviewItemView extends Component<RenderInput> {
+export class CatalogPreviewItemView extends Component<IPreviewProduct> {
 	protected _title: HTMLHeadingElement;
 	protected _description: HTMLParagraphElement;
 	protected _image: HTMLImageElement;
@@ -42,20 +43,39 @@ export class CatalogPreviewItemView extends Component<RenderInput> {
 		});
 	}
 
-	render(data: RenderInput) {
-		this._id = data.id;
-		this._title.textContent = data.title;
-		this._description.textContent = data.description;
-		this._image.src = data.image;
-		this._category.textContent = data.category;
-		if (data.price) {
-			this._price.textContent = data.price.toString() + ' синапсов';
+	set id(id: string) {
+		this._id = id;
+	}
+
+	set title(title: string) {
+		this._title.textContent = title;
+	}
+
+	set description(description: string) {
+		this._description.textContent = description;
+	}
+
+	set image(image: string) {
+		this._image.src = image;
+	}
+
+	set category(category: string) {
+		this._category.textContent = category;
+		this._category.classList.add(determineCategoryClass(category));
+	}
+
+	set price(price: number | null) {
+		if (price) {
+			this._price.textContent = price.toString() + ' синапсов';
 		} else {
 			this._price.textContent = '';
-		}
-		if (data.alreadyInBasket) {
 			this._addToBasketButton.disabled = true;
 		}
-		return this.container;
+	}
+
+	set alreadyInBasket(alreadyInBasket: boolean) {
+		if (alreadyInBasket) {
+			this._addToBasketButton.disabled = true;
+		}
 	}
 }

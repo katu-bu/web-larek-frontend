@@ -1,18 +1,14 @@
 import { Component } from '../base/component';
 import { IEvents } from '../base/events';
 import { ensureElement } from '../../utils/utils';
+import { determineCategoryClass } from '../../utils/category';
+import { IProduct } from '../../types';
 
 // отображение деталей продукта в каталоге
 
-interface RenderInput {
-	id: string;
-	title: string;
-	image: string;
-	category: string;
-	price: number | null;
-}
+type IPartialProduct = Partial<Omit<IProduct, 'description'>>;
 
-export class CatalogItemView extends Component<RenderInput> {
+export class CatalogItemView extends Component<IPartialProduct> {
 	protected _title: HTMLHeadingElement;
 	protected _image: HTMLImageElement;
 	protected _category: HTMLSpanElement;
@@ -30,20 +26,32 @@ export class CatalogItemView extends Component<RenderInput> {
 		);
 		this._price = ensureElement<HTMLSpanElement>('.card__price', container);
 		this.container.addEventListener('click', () => {
-			this.events.emit('ui:preview-open', {id: this._id});
+			this.events.emit('ui:preview-open', { id: this._id });
 		});
 	}
 
-	render(data: RenderInput) {
-		this._id = data.id;
-		this._title.textContent = data.title;
-		this._image.src = data.image;
-		this._category.textContent = data.category;
-		if (data.price) {
-			this._price.textContent = data.price.toString() + ' синапсов';
+	set id(id: string) {
+		this._id = id;
+	}
+
+	set title(title: string) {
+		this._title.textContent = title;
+	}
+
+	set image(image: string) {
+		this._image.src = image;
+	}
+
+	set category(category: string) {
+		this._category.textContent = category;
+		this._category.classList.add(determineCategoryClass(category));
+	}
+
+	set price(price: number | null) {
+		if (price) {
+			this._price.textContent = price.toString() + ' синапсов';
 		} else {
 			this._price.textContent = '';
 		}
-		return this.container;
 	}
 }

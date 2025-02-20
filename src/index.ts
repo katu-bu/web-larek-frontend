@@ -17,6 +17,7 @@ import { Api } from './components/base/api';
 import { Modal } from './components/common/view/modal';
 import { PaymentMethod } from './types';
 
+const api = new ShopAPI(new Api(API_URL), CDN_URL);
 const events = new EventEmitter();
 const basketModel = new BasketModel(events);
 const catalogModel = new CatalogModel(events);
@@ -25,7 +26,7 @@ const basketItemTemplate = document.querySelector(
 	'#card-basket'
 ) as HTMLTemplateElement;
 const basketTemplate = document.querySelector('#basket') as HTMLTemplateElement;
-const pageView = new PageView(document.querySelector('.page__wrapper'), events);
+const pageView = new PageView(document.querySelector('.page'), events);
 const catalogItemTemplate = document.querySelector(
 	'#card-catalog'
 ) as HTMLTemplateElement;
@@ -41,27 +42,22 @@ const resultTemplate = document.querySelector(
 ) as HTMLTemplateElement;
 
 const modal = new Modal(document.querySelector('.modal'), events);
-// const basketModal = new Modal(document.querySelector('.modal__basket'), events);
-// const catalogPreviewItemModal = new Modal(
-// 	document.querySelector('.modal__preview'),
-// 	events
-// );
-// const orderFormModal = new Modal(
-// 	document.querySelector('.modal__order-form'),
-// 	events
-// );
-// const contactsFormModal = new Modal(
-// 	document.querySelector('.modal__contacts-form'),
-// 	events
-// );
-// const orderResultModal = new Modal(
-// 	document.querySelector('.modal__result'),
-// 	events
-// );
-
 
 let orderView: OrderFormView | null = null;
 let contactsView: ContactsFormView | null = null;
+
+// В данном проекте функция `computeTotalPrice` никак не может быть методом
+// модели Корзины, потому что использует методы также и модели Каталога,
+// к которой нельзя обратиться из модели Корзины, а только из связующего кода.
+
+// Каждая отдельная модель отвечает за логику работы части приложения
+// и хранение специфичных данных. И только в Презентере происходит связывание,
+// в частности, данных из различных моделей. Иначе нарушается принцип изоляции,
+// когда разные модели не должны зависеть друг от друга.
+
+// Сейчас в модели Корзины используется только `id` и не используется `price`.
+// Если добавить в модель Корзины данные о цене, то эта модель Корзины 
+// по сути будет дублировать часть функционала модели Каталога.
 
 function computeTotalPrice() {
 	return Array.from(basketModel.items)
@@ -77,7 +73,6 @@ function renderBasket() {
 		true
 	) as HTMLElement;
 	const basketView = new BasketView(basketHTMLElement, events);
-	// УБРАТЬ basketModal.content = basketHTMLElement;
 	modal.content = basketHTMLElement;
 	const htmlElements = Array.from(basketModel.items).map((id, ix) => {
 		const basketItemViewHTMLElement = (
@@ -123,7 +118,7 @@ events.on('catalog:change', () => {
 // вызывается при нажатии на товар из каталога
 events.on('ui:preview-open', (event: { id: string }) => {
 	const product = catalogModel.getProduct(event.id);
-	catalogModel.setPreview(product);
+	catalogModel.preview = product;
 });
 
 // вызывается при изменении превью товара для показа в модальном окне
@@ -132,19 +127,16 @@ events.on('catalog:preview:change', () => {
 		true
 	) as HTMLElement;
 	const previewView = new CatalogPreviewItemView(previewHTMLElement, events);
-	// УБРАТЬ catalogPreviewItemModal.content = previewHTMLElement;
 	modal.content = previewHTMLElement;
 	const preview = catalogModel.preview;
 	const alreadyInBasket = basketModel.items.has(preview.id);
 	previewView.render(Object.assign({ alreadyInBasket }, preview));
-	// УБРАТЬ catalogPreviewItemModal.open();
 	modal.open();
 });
 
 // пользователь нажимает кнопку добавления в корзину (`CatalogItemView`).
 events.on('ui:add-to-basket', (event: { id: string }) => {
 	basketModel.add(event.id);
-	// УБРАТЬ catalogPreviewItemModal.close();
 	modal.close();
 });
 
@@ -156,21 +148,18 @@ events.on('ui:remove-from-basket', (event: { id: string }) => {
 // пользователь открывает корзину с главной страницы `PageView`
 events.on('ui:basket-open', () => {
 	renderBasket();
-	// УБРАТЬ basketModal.open();
 	modal.open();
 });
 
 // пользователь нажимает кнопку "Оформить заказ" в `BasketView`.
 events.on('ui:order-initiate', () => {
-	// УБРАТЬ basketModal.close();
-		modal.close();
+	modal.close();
 	const orderHTMLElement = (
 		orderTemplate.content.cloneNode(true) as DocumentFragment
 	).querySelector('.form') as HTMLFormElement;
 	orderModel.reset(Array.from(basketModel.items), computeTotalPrice());
 	basketModel.clear();
 	orderView = new OrderFormView(orderHTMLElement, events);
-	// УБРАТЬ orderFormModal.content = orderHTMLElement;
 	modal.content = orderHTMLElement;
 	orderView.render({
 		payment: orderModel.customerData.payment,
@@ -178,7 +167,6 @@ events.on('ui:order-initiate', () => {
 		valid: false,
 		errors: '',
 	});
-	// УБРАТЬ orderFormModal.open();
 	modal.open();
 });
 
@@ -223,14 +211,12 @@ events.on(
 
 // пользователь отправляет заказ в `OrderFormView`
 events.on('order:submit', () => {
-	// УБРАТЬ orderFormModal.close();
 	modal.close();
 	orderView = null;
 	const contactsHTMLElement = (
 		contactsTemplate.content.cloneNode(true) as DocumentFragment
 	).querySelector('.form') as HTMLFormElement;
 	contactsView = new ContactsFormView(contactsHTMLElement, events);
-	// УБРАТЬ contactsFormModal.content = contactsHTMLElement;
 	modal.content = contactsHTMLElement;
 	contactsView.render({
 		email: orderModel.customerData.email,
@@ -238,33 +224,35 @@ events.on('order:submit', () => {
 		valid: false,
 		errors: '',
 	});
-	// УБРАТЬ contactsFormModal.open();
 	modal.open();
 });
 
 // пользователь отправляет форму с контактными данными (`ContactsFormView`).
 events.on('contacts:submit', () => {
-	// УБРАТЬ contactsFormModal.close();
-	modal.close();
-	contactsView = null;
-	const resultHTMLElement = (
-		resultTemplate.content.cloneNode(true) as DocumentFragment
-	).querySelector('.order-success') as HTMLElement;
-	const resultView = new OrderResultView(resultHTMLElement, events);
-	// УБРАТЬ orderResultModal.content = resultHTMLElement;
-	modal.content = resultHTMLElement;
-	resultView.render({
-		totalPrice: orderModel.total,
-	});
-	// УБРАТЬ orderResultModal.open();
-	modal.open();
+	api
+		.orderProducts(orderModel.getFinalOrder())
+		.then((res) => {
+			modal.close();
+			contactsView = null;
+			const resultHTMLElement = (
+				resultTemplate.content.cloneNode(true) as DocumentFragment
+			).querySelector('.order-success') as HTMLElement;
+			const resultView = new OrderResultView(resultHTMLElement, events);
+			modal.content = resultHTMLElement;
+			resultView.render({
+				totalPrice: res.total,
+			});
+			modal.open();
+		})
+		.catch((err) => {
+			console.error(err);
+			modal.close();
+		});
 });
 
 // пользователь нажимает на кнопку "За новыми покупками!"
 events.on('succes-close', () => {
-	// УБРАТЬ orderResultModal.close();
 	modal.close();
-	// ? orderModel.getFinalOrder();
 });
 
 events.on('modal:open', () => {
@@ -275,12 +263,7 @@ events.on('modal:close', () => {
 	pageView.locked = false;
 });
 
-const api = new ShopAPI(new Api(API_URL), CDN_URL);
-
 api
 	.getProducts()
-	.then((res) => catalogModel.setItems(res))
+	.then((res) => (catalogModel.items = res))
 	.catch((err) => console.error(err));
-
-// api
-// 	.orderProducts(orderModel.getFinalOrder())

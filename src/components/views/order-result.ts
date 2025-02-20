@@ -4,21 +4,23 @@ import { ensureElement } from '../../utils/utils';
 
 // интерфейс отображений - модальное окно с подтверждением заказа
 
-interface RenderInput {
+interface ITotalPrice {
 	totalPrice: number;
 }
 
-export class OrderResultView extends Component<RenderInput> {
+export class OrderResultView extends Component<ITotalPrice> {
 	protected _totalPrice: HTMLParagraphElement;
 	protected _orderSuccessCloseButton: HTMLButtonElement;
 
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 		this._totalPrice = ensureElement<HTMLParagraphElement>(
-			'.order-success__description', container
+			'.order-success__description',
+			container
 		);
 		this._orderSuccessCloseButton = ensureElement<HTMLButtonElement>(
-			'.order-success__close', container
+			'.order-success__close',
+			container
 		);
 
 		this._orderSuccessCloseButton.addEventListener('click', () => {
@@ -26,8 +28,8 @@ export class OrderResultView extends Component<RenderInput> {
 		});
 	}
 
-	render(data: RenderInput) {
-		this._totalPrice.textContent = 'Списано ' + data.totalPrice.toString() + ' синапсов';
-		return this.container;
+	set totalPrice(totalPrice: number) {
+		this._totalPrice.textContent =
+			'Списано ' + totalPrice.toString() + ' синапсов';
 	}
 }

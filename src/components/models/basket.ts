@@ -15,6 +15,11 @@ interface IBasketModel {
 export class BasketModel implements IBasketModel {
 	items: Set<string> = new Set();
 
+	constructor(protected events: IEvents) {}
+	protected _changed() {
+		this.events.emit('basket:change', {});
+	}
+
 	add(id: string): void {
 		this.items.add(id);
 		this._changed();
@@ -36,10 +41,5 @@ export class BasketModel implements IBasketModel {
 
 	countItems(): number {
 		return this.items.size;
-	}
-
-	constructor(protected events: IEvents) {}
-	protected _changed() {
-		this.events.emit('basket:change', {});
 	}
 }

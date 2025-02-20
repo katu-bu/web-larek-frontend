@@ -4,12 +4,12 @@ import { ensureElement } from '../../utils/utils';
 
 // отображение корзины
 
-interface RenderInput {
+interface IBasket {
 	items: HTMLElement[];
 	totalPrice: number;
 }
 
-export class BasketView extends Component<RenderInput> {
+export class BasketView extends Component<IBasket> {
 	protected _totalPrice: HTMLSpanElement;
 	protected _itemsList: HTMLUListElement;
 	protected _makeOrderButton: HTMLButtonElement;
@@ -34,13 +34,16 @@ export class BasketView extends Component<RenderInput> {
 		});
 	}
 
-	render(data: RenderInput) {
-		this._itemsList.replaceChildren(...data.items);
-		if (data.totalPrice) {
-			this._totalPrice.textContent = data.totalPrice.toString() + ' синапсов';
+	set itemsList(items: HTMLElement[]) {
+		this._itemsList.replaceChildren(...items);
+	}
+
+	set totalPrice(totalPrice: number) {
+		if (totalPrice) {
+			this._totalPrice.textContent = totalPrice.toString() + ' синапсов';
 		} else {
 			this._totalPrice.textContent = '';
+			this._makeOrderButton.disabled = true;
 		}
-		return this.container;
 	}
 }

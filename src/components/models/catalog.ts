@@ -4,34 +4,42 @@ import { IProduct } from '../../types/index';
 // интерфейс модели данных - каталог товаров
 
 interface ICatalogModel {
-	items: IProduct[];
-	preview: IProduct;
-	setItems(items: IProduct[]): void;
+	get preview(): IProduct;
+	set preview(item: IProduct);
+	get items(): IProduct[];
+	set items(items: IProduct[]);
 	getProduct(id: string): IProduct;
-	setPreview(item: IProduct): void;
 }
 
 // класс, реализующий интерфейс модели данных - каталог товаров
 
 export class CatalogModel implements ICatalogModel {
-	items: IProduct[] = [];
-	preview: IProduct = null;
+	protected _items: IProduct[] = [];
+	protected _preview: IProduct = null;
 
-	setItems(items: IProduct[]): void {
-		this.items = items;
+	constructor(protected events: IEvents) {}
+
+	get items(): IProduct[] {
+		return this._items;
+	}
+
+	set items(items: IProduct[]) {
+		this._items = items;
 		this._changed();
+	}
+
+	get preview(): IProduct {
+		return this._preview;
+	}
+
+	set preview(item: IProduct) {
+		this._preview = item;
+		this._previewChanged();
 	}
 
 	getProduct(id: string): IProduct {
 		return this.items.find((item) => item.id === id);
 	}
-
-	setPreview(item: IProduct) {
-		this.preview = item;
-		this._previewChanged();
-	}
-
-	constructor(protected events: IEvents) {}
 
 	protected _changed() {
 		this.events.emit('catalog:change', {});
@@ -39,5 +47,4 @@ export class CatalogModel implements ICatalogModel {
 	protected _previewChanged() {
 		this.events.emit('catalog:preview:change', {});
 	}
-
 }

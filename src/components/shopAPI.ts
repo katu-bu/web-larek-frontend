@@ -19,8 +19,7 @@ export class ShopAPI implements IShopAPI {
 	constructor(protected api: Api, protected cdn: string) {}
 
 	getProducts(): Promise<IProduct[]> {
-		const rawPromise: Promise<object> = this.api.get('/product');
-		return rawPromise.then((data: GetProductsResult) =>
+		return this.api.get('/product').then((data: GetProductsResult) =>
 			data.items.map((item) => {
 				item.image = this.cdn + item.image;
 				return item;
@@ -29,7 +28,6 @@ export class ShopAPI implements IShopAPI {
 	}
 
 	orderProducts(order: IOrderData): Promise<IOrderResult> {
-		const rawPromise: Promise<object> = this.api.post('/order', order);
-		return rawPromise.then((data: IOrderResult) => data);
+		return this.api.post('/order', order).then((data: IOrderResult) => data);
 	}
 }

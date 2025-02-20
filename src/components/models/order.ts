@@ -23,6 +23,8 @@ export class OrderModel implements IOrderModel {
 	total: number;
 	items: string[];
 
+	constructor(protected events: IEvents) {}
+
 	updatePayment(newValue: PaymentMethod) {
 		this.customerData.payment = newValue;
 		delete this.orderErrors.payment;
@@ -68,10 +70,10 @@ export class OrderModel implements IOrderModel {
 		this.total = total;
 		this._changed();
 		this.orderErrors = {
-			payment: 'пустое поле',
-			email: 'пустое поле',
-			phone: 'пустое поле',
-			address: 'пустое поле',
+			payment: 'Заполните это поле.',
+			email: 'Заполните это поле.',
+			phone: 'Заполните это поле.',
+			address: 'Заполните это поле.',
 		};
 	}
 
@@ -85,8 +87,6 @@ export class OrderModel implements IOrderModel {
 			items: this.items,
 		};
 	}
-
-	constructor(protected events: IEvents) {}
 
 	protected _changed() {
 		this.events.emit('order:change', {});

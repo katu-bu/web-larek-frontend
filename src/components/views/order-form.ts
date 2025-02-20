@@ -5,12 +5,12 @@ import { PaymentMethod } from '../../types';
 
 // отображение деталей заказа: способ оплаты и адрес доставки
 
-interface RenderInput {
+interface IOrderFormData {
 	payment?: PaymentMethod;
 	address?: string;
 }
 
-export class OrderFormView extends Form<RenderInput> {
+export class OrderFormView extends Form<IOrderFormData> {
 	protected _address: HTMLInputElement;
 	protected _cardOrderButton: HTMLButtonElement;
 	protected _cashOrderButton: HTMLButtonElement;
@@ -48,8 +48,15 @@ export class OrderFormView extends Form<RenderInput> {
 		// в связующем коде надо будет обработать закрытие модалки
 	}
 
-	handleFormErrors(formErrors: Partial<Record<keyof RenderInput, string>>) {
+	handleFormErrors(formErrors: Partial<Record<keyof IOrderFormData, string>>) {
 		super.valid = !formErrors.address && !formErrors.payment;
+		if (formErrors.address) {
+			super.errors = 'Не заполнен адрес';
+		} else if (formErrors.payment) {
+			super.errors = 'Не выбран тип оплаты';
+		} else {
+			super.errors = '';
+		}
 	}
 
 	set address(value: string) {
@@ -57,7 +64,7 @@ export class OrderFormView extends Form<RenderInput> {
 	}
 
 	makeAddressRequired() {
-		this._address.required = true
+		this._address.required = true;
 	}
 
 	set payment(value: PaymentMethod) {
