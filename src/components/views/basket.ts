@@ -11,7 +11,7 @@ interface IBasket {
 
 export class BasketView extends Component<IBasket> {
 	protected _totalPrice: HTMLSpanElement;
-	protected _itemsList: HTMLUListElement;
+	protected _items: HTMLUListElement;
 	protected _makeOrderButton: HTMLButtonElement;
 
 	constructor(container: HTMLElement, protected events: IEvents) {
@@ -24,7 +24,7 @@ export class BasketView extends Component<IBasket> {
 			'.basket__button',
 			container
 		);
-		this._itemsList = ensureElement<HTMLUListElement>(
+		this._items = ensureElement<HTMLUListElement>(
 			'.basket__list',
 			container
 		);
@@ -34,8 +34,8 @@ export class BasketView extends Component<IBasket> {
 		});
 	}
 
-	set itemsList(items: HTMLElement[]) {
-		this._itemsList.replaceChildren(...items);
+	set items(items: HTMLElement[]) {
+		this._items.replaceChildren(...items);
 	}
 
 	set totalPrice(totalPrice: number) {
